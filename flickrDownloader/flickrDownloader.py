@@ -124,7 +124,7 @@ def flickr_photos_search(api_key_or_file_path,                      # type: unic
     query += content_type.value + media.value + response_format.value + FlickrPrivacyFilter.public.value + image_order.value
 
     if license_id is not None:
-        query += u"&license_id=" + unicode(license_id)
+        query += u"&license=" + unicode(license_id)
 
     rest = n_images % MAX_IMAGES_PER_PAGE
     n_queries = n_images/MAX_IMAGES_PER_PAGE
