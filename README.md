@@ -42,6 +42,7 @@ flickr_photos_downloader(api_key,
                          image_size=FlickrImageSize.longedge_1600,
                          content_type=FlickrContentType.photos,
                          media=FlickrMedia.photos,
+			 image_order=FlickrImageOrder.date_posted_asc,
                          download_path="img_downloads",
                          save_filename_prefix="flickr_downloaded_",
                          forced_extension=None,
@@ -58,6 +59,7 @@ only_link = flickr_photos_links(api_key,
                                 image_size=FlickrImageSize.longedge_1600,
                                 content_type=FlickrContentType.photos,
                                 media=FlickrMedia.photos,
+				image_order=FlickrImageOrder.date_posted_asc,
                                 verbose=True,
                                 ignore_errors=False,
                                 license_id=license_id)
@@ -116,4 +118,15 @@ class FlickrImageSize(Enum):
     longedge_1024  = "_b"  # 1024 on the longest edge
     longedge_1600  = "_h"  # 1600 on the longest edge (flickr new feature from 01/03/2012)
     longedge_2048  = "_k"  # 2048 on the longest edge (flickr new feature from 01/03/2012)
+
+class FlickrImageOrder(Enum):
+    date_posted_asc         = u"&sort=date-posted-asc"
+    date_posted_desc        = u"&sort=date-posted-desc"
+    date_taken_asc          = u"&sort=date-taken-asc"
+    date_taken_desc         = u"&sort=date-taken-desc"
+    interestingness_desc    = u"&sort=interestingness-desc"
+    interestingness_asc     = u"&sort=interestingness-asc"
+    relevance               = u"&sort=relevance"
+    default                 = relevance # Matches with flickr web search
+
 ```

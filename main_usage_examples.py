@@ -3,6 +3,7 @@ from flickrDownloader import *
 
 api_key = "INSERT_HERE_YOUR_API_KEY"  # if you want to insert your apikey in source code
 api_key = "flickr.apikey"  # if you want to read apikey from file
+api_key = "348b375fd08b8f7c434034a2dda71855"
 
 # If you want to share your code in git, you may want not to share your api key too!
 # In that case, insert your api key in the flickr.apikey file and add flickr.apikey in your .gitignore
@@ -42,6 +43,7 @@ flickr_photos_downloader(api_key,
                          image_size=FlickrImageSize.longedge_1600,
                          content_type=FlickrContentType.photos,
                          media=FlickrMedia.photos,
+                         image_order=FlickrImageOrder.date_posted_asc,
                          download_path="img_downloads",
                          save_filename_prefix="flickr_downloaded_",
                          forced_extension=None,
@@ -58,6 +60,7 @@ only_link = flickr_photos_links(api_key,
                                 image_size=FlickrImageSize.longedge_1600,
                                 content_type=FlickrContentType.photos,
                                 media=FlickrMedia.photos,
+                                image_order=FlickrImageOrder.date_posted_asc,
                                 verbose=True,
                                 ignore_errors=False,
                                 license_id=license_id)

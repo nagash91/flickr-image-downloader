@@ -61,6 +61,15 @@ class FlickrImageSize(Enum):
     longedge_1600  = u"_h"  # 1600 on the longest edge (flickr new feature from 01/03/2012)
     longedge_2048  = u"_k"  # 2048 on the longest edge (flickr new feature from 01/03/2012)
 
+class FlickrImageOrder(Enum):
+    date_posted_asc         = u"&sort=date-posted-asc"
+    date_posted_desc        = u"&sort=date-posted-desc"
+    date_taken_asc          = u"&sort=date-taken-asc"
+    date_taken_desc         = u"&sort=date-taken-desc"
+    interestingness_desc    = u"&sort=interestingness-desc"
+    interestingness_asc     = u"&sort=interestingness-asc"
+    relevance               = u"&sort=relevance"
+    default                 = relevance # Matches with flickr web search
 
     # TODO: original image: jpg, gif or png according to the source format, not supported yet
     #  original = "_o"
@@ -80,7 +89,8 @@ def flickr_photos_search(api_key_or_file_path,                      # type: unic
                          tag_mode=FlickrTagMode.default,            # type: FlickrTagMode
                          content_type=FlickrContentType.default,    # type: FlickrContentType
                          media=FlickrMedia.default,                 # type: FlickrMedia
-                         response_format=FlickrResponseFormat.JSON,  # type: FlickrResponseFormat
+                         response_format=FlickrResponseFormat.JSON, # type: FlickrResponseFormat
+                         image_order=FlickrImageOrder.default,      # type: FlickrImageOrder
                          license_id=None
                          ):
     # type: (unicode, int, unicode, unicode, FlickrTagMode, FlickrContentType, FlickrMedia, FlickrResponseFormat) -> list(Response)
@@ -111,10 +121,10 @@ def flickr_photos_search(api_key_or_file_path,                      # type: unic
     if tags is not None:
         query += u"&tags=" + urllib2.quote(tags.encode('utf-8')) + tag_mode.value
         #  query.replace(" ", "%20")
-    query += content_type.value + media.value + response_format.value + FlickrPrivacyFilter.public.value
+    query += content_type.value + media.value + response_format.value + FlickrPrivacyFilter.public.value + image_order.value
 
     if license_id is not None:
-        query += u"&license_id=" + unicode(license_id)
+        query += u"&license=" + unicode(license_id)
 
     rest = n_images % MAX_IMAGES_PER_PAGE
     n_queries = n_images/MAX_IMAGES_PER_PAGE
@@ -138,6 +148,7 @@ def flickr_photos_links(api_key_or_file_path,                    # type: unicode
                         tag_mode=FlickrTagMode.default,          # type: FlickrTagMode
                         content_type=FlickrContentType.default,  # type: FlickrContentType
                         media=FlickrMedia.default,               # type: FlickrMedia
+                        image_order=FlickrImageOrder.default,    # type: FlickrImageOrder
                         license_id=None,
                         verbose=False,
                         ignore_errors=False,
@@ -155,7 +166,8 @@ def flickr_photos_links(api_key_or_file_path,                    # type: unicode
             responses = flickr_photos_search(api_key_or_file_path=api_key_or_file_path,  n_images=n_images,
                                              query_text=query_text, tags=tags, tag_mode=tag_mode,
                                              content_type=content_type, media=media,
-                                             response_format=FlickrResponseFormat.JSON, license_id=license_id)
+                                             response_format=FlickrResponseFormat.JSON, image_order=image_order, 
+                                             license_id=license_id)
 
             for response in responses:
                 if response.ok:
@@ -207,6 +219,7 @@ def flickr_photos_downloader(api_key_or_file_path,                    # type: un
                              image_size=FlickrImageSize.default,      # type: FlickrImageSize
                              content_type=FlickrContentType.default,  # type: FlickrContentType
                              media=FlickrMedia.default,               # type: FlickrMedia
+                             image_order=FlickrImageOrder.default,    # type: FlickrImageOrder
                              license_id=None,
                              download_path=u"",
                              save_filename_prefix=u"flickr_",
@@ -219,7 +232,8 @@ def flickr_photos_downloader(api_key_or_file_path,                    # type: un
 
     links = flickr_photos_links(api_key_or_file_path=api_key_or_file_path, query_text=query_text, tags=tags, n_images=n_images,
                                 image_size=image_size, tag_mode=tag_mode, content_type=content_type, media=media,
-                                verbose=verbose, ignore_errors=ignore_errors, license_id=license_id, max_error_retries=max_error_retries)
+                                image_order=image_order, verbose=verbose, ignore_errors=ignore_errors, license_id=license_id, 
+                                max_error_retries=max_error_retries)
     web_downloader(link_list=links, download_path=download_path, save_filename_prefix=save_filename_prefix,
                    forced_extension=forced_extension, verbose=verbose, ignore_errors=ignore_errors)
     return links
